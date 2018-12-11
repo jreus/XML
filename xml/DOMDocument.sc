@@ -1,6 +1,6 @@
 
-/* 
- * SuperCollider3 source file "DOMDocument.sc" 
+/*
+ * SuperCollider3 source file "DOMDocument.sc"
  * Written by Jens Gulden, jgulden@cs.tu-berlin.de.
  * Licensed under the GNU General Public License (GPL),
  * this software comes with NO WARRANTY.
@@ -91,7 +91,7 @@
 // Newer versions of the DOM also include features like XML namespaces, which are
 // explicitly not supported by this adoption, but might not be required for most
 // applications within SuperCollider anyway.
-// @poseidon-object-id [sm$1eed0fb:10d5552be97:-7e70]                                                                                    
+// @poseidon-object-id [sm$1eed0fb:10d5552be97:-7e70]
 DOMDocument : DOMNode {
 
     // --- attributes
@@ -110,136 +110,140 @@ DOMDocument : DOMNode {
 
 
     // --- new(filename) : void -----------------------------------------------
-    //    
-    *new { arg filename; // type String        
+    //
+    *new { arg filename; // type String
         ^super.new.initFromFile(filename);
-    } // end new        
+    } // end new
 
 
     // --- getDoctype() : DOMNode ---------------------------------------------
-    //    
-    getDoctype {        
+    //
+    getDoctype {
         // explicitly not implemented, DTDs are not supported by this implementation
         ^nil; // type  DOMNode
-    } // end getDoctype        
+    } // end getDoctype
 
 
     // --- getImplementation() : DOMImplementation ----------------------------
-    //    
-    getImplementation {        
+    //
+    getImplementation {
         ^DOMImplementation.instance; // type  DOMImplementation
-    } // end getImplementation        
+    } // end getImplementation
 
 
     // --- getDocumentElement() : DOMElement ----------------------------------
-    //    
-    getDocumentElement {        
+    //
+    getDocumentElement {
         ^documentElement; // type DOMElement
-    } // end getDocumentElement        
+    } // end getDocumentElement
 
 
     // --- createElement(tagname) : DOMElement --------------------------------
-    //     
-    createElement { arg tagname; // type String        
+    //
+    createElement { arg tagname; // type String
         var n;
-        
+
         n = DOMElement.new(this, tagname);
         n.initAttributes(Dictionary.new);
         ^n; // type DOMElement
-    } // end createElement        
+    } // end createElement
 
 
     // --- createDocumentFragment() : DOMDocumentFragment ---------------------
-    //    
-    createDocumentFragment {        
+    //
+    createDocumentFragment {
         ^DOMDocumentFragment.new(this); // type DOMElement
-    } // end createDocumentFragment        
+    } // end createDocumentFragment
 
 
     // --- createTextNode(text) : DOMText -------------------------------------
-    //     
-    createTextNode { arg text; // type String        
+    //
+    createTextNode { arg text; // type String
         ^DOMText.new(this, text); // type DOMText
-    } // end createTextNode        
+    } // end createTextNode
 
 
     // --- createComment(comment) : DOMComment --------------------------------
-    //     
-    createComment { arg comment; // type String        
+    //
+    createComment { arg comment; // type String
         ^DOMComment.new(this, comment); // type DOMComment
-    } // end createComment        
+    } // end createComment
 
 
     // --- createCDATASection(cdata) : DOMCDATASection ------------------------
-    //     
-    createCDATASection { arg cdata; // type String        
+    //
+    createCDATASection { arg cdata; // type String
         ^DOMCDATASection.new(this, cdata); // type DOMCDATASection
-    } // end createCDATASection        
+    } // end createCDATASection
 
 
     // --- createProcessingInstruction(target, data) : DOMProcessingInstruction
-    //      
-    createProcessingInstruction { arg target, data; // types String, String        
+    //
+    createProcessingInstruction { arg target, data; // types String, String
         ^DOMProcessingInstruction.new(this, target, data); // type DOMProcessingInstruction
-    } // end createProcessingInstruction        
+    } // end createProcessingInstruction
 
 
     // --- getElementsByTagName(tagname) : List -------------------------------
-    //     
-    getElementsByTagName { arg tagname; // type String        
+    //
+    getElementsByTagName { arg tagname; // type String
         var d;
         d = this.getDocumentElement;
-        if ( d != nil , { 
+        if ( d != nil , {
             ^d.getElementsByTagName(tagname); // type  List
         },{
             ^nil;
         });
-    } // end getElementsByTagName        
+    } // end getElementsByTagName
 
 
     // --- read(file) : void --------------------------------------------------
-    //    
-    read { arg file; // type File        
+    //
+    read { arg file; // type File
         var s;
         s = String.readNew(file);
         this.parseXML(s);
-    } // end read        
+    } // end read
 
 
     // --- write(file) : void -------------------------------------------------
-    //    
-    write { arg file; // type File        
+    //
+    write { arg file; // type File
         var s;
-        
+
         s = this.format;
         file.putString(s);
-    } // end write        
+    } // end write
 
 
     // --- parseXML(xml) : void -----------------------------------------------
-    //    
-    parseXML { arg xml; // type String        
+    //
+    parseXML { arg xml; // type String
         startIndex = 0;
         endIndex = xml.size;
         nodeValue = xml; // nodeValue of document is whole xml string
         this.parse(this, 0);
-    } // end parseXML        
+    } // end parseXML
 
 
     // --- format() : String --------------------------------------------------
-    //    
-    format {        
-        var xml = "";        
-        this.getChildNodes.do({ arg node;
+    //
+    format {
+        var xml = "";
+
+		"FORMATTING %".format(this).postln;
+
+		this.getChildNodes.do({ arg node;
+			"FORMATTING ... % % %".format(node.getNodeName, node.getNodeType, node).postln;
             xml = xml ++ node.format(0);
         });
         ^xml;
-    } // end format        
+    } // end format
 
 
     // --- importNode(node) : DOMNode -----------------------------------------
-    //     
-    importNode { arg node; // type DOMNode        
+    //
+    importNode { arg node; // type DOMNode
         var a;
         a = node.getAttributes;
         if ( a != nil , {
@@ -253,27 +257,27 @@ DOMDocument : DOMNode {
             this.importNode(n);
         });
         ^node; // type  DOMNode
-    } // end importNode        
+    } // end importNode
 
 
     // --- initFromFile(filename) :  ------------------------------------------
-    //    
-    initFromFile { arg filename; // type String        
+    //
+    initFromFile { arg filename; // type String
         var f;
-        
+
         this.init(nil, DOMNode.node_DOCUMENT, "#document");
         if ( filename != nil , {
             f = File(filename, "r");
             this.filename = filename;
             this.read(f);
-            f.close;        
+            f.close;
         });
-    } // end initFromFile        
+    } // end initFromFile
 
 
     // --- parse(parentNode, pos) : int ---------------------------------------
-    //      
-    parse { arg parentNode, pos; // types DOMNode, int        
+    //
+    parse { arg parentNode, pos; // types DOMNode, int
         // Main parsing function.
         // The idea is to originally parse positions only and remember them
         // in each node's startIndex and endIndex. The actual copyRange happens
@@ -284,7 +288,7 @@ DOMDocument : DOMNode {
         if ( pos < endIndex, {
             if ( nodeValue[pos] == $< , { // tag
                 if ( nodeValue[pos + 1] == $!, { // starting with "<!..."
-                    if ( nodeValue.containsStringAt(pos + 2, "--"), { 
+                    if ( nodeValue.containsStringAt(pos + 2, "--"), {
                         // Comment
                         n = DOMComment.new(this);
                         pos = n.parse(parentNode, pos + 4);
@@ -292,7 +296,7 @@ DOMDocument : DOMNode {
                             parentNode.appendChild(n);
                         });
                     },{
-                        if ( nodeValue.containsStringAt(pos + 2, "[CDATA["), { 
+                        if ( nodeValue.containsStringAt(pos + 2, "[CDATA["), {
                             // CDATA section
                             n = DOMCDATASection.new(this);
                             pos = n.parse(parentNode, pos + 9);
@@ -336,18 +340,18 @@ DOMDocument : DOMNode {
                     });
                     parentNode.appendChild(n);
                 });
-            });            
+            });
             // one node has been parsed now, continue recursively with next sibling
             ^this.parse(parentNode, pos); // recursion
         },{ // else: end of input reached
             ^endIndex;
         });
-    } // end parse        
+    } // end parse
 
 
     // --- parseQuoted(pos, result) : int -------------------------------------
-    //      
-    parseQuoted { arg pos, result; // types int, Ref        
+    //
+    parseQuoted { arg pos, result; // types int, Ref
         // returns next character position after quoted string, resultString vie Ref
         // pos points at initial quote ( ' or " )
         var s;
@@ -376,29 +380,29 @@ DOMDocument : DOMNode {
         });
         result.set(s);
         ^(pos + 1);
-    } // end parseQuoted        
+    } // end parseQuoted
 
 
     // --- linenr(pos) : int --------------------------------------------------
-    //     
-    linenr { arg pos; // type int        
+    //
+    linenr { arg pos; // type int
         // find out in which line a charter index is located (may be costy, because when reached here, we are creating the string for an error message)
         var s;
         var ss; // String[]
-        
+
         s = nodeValue.copyFromStart(pos);
         ss = s.split(Char.nl); // linux
         ^ss.size;
-    } // end linenr        
+    } // end linenr
 
 
     // --- skipUntil(pos, delim) : int ----------------------------------------
-    //      
-    skipUntil { arg pos, delim; // types int, String        
+    //
+    skipUntil { arg pos, delim; // types int, String
         var xml = this.getNodeValue;
         while ( { not ( delim.includes(xml[pos]) ) } , {
             if ( (xml[pos].ascii == 34) || (xml[pos].ascii == 39) , { // " or ', quoted part starts
-            	
+
                 pos = this.parseQuoted( pos, Ref.new( nil ) ); // dummy Ref
             },{
                 pos = pos + 1;
@@ -408,42 +412,42 @@ DOMDocument : DOMNode {
             });
         });
         ^pos; // type int
-    } // end skipUntil        
+    } // end skipUntil
 
 
     // --- parseError(message, pos) :  ----------------------------------------
-    //     
-    parseError { arg message, pos; // types String, int        
+    //
+    parseError { arg message, pos; // types String, int
         message = "XML parser: " ++ message;
         if (this.filename != nil , {
             message = message ++ " in file " ++ this.filename;
         });
         message = message ++ ", line " ++ this.linenr(pos);
         message.die; // stop executing program
-    } // end parseError        
+    } // end parseError
 
 
     // --- initStandardEntities() : void --------------------------------------
-    //   
-    *initStandardEntities {        
-        // entity-handling is very simple, based on string replacement.    
+    //
+    *initStandardEntities {
+        // entity-handling is very simple, based on string replacement.
         if ( standardEntities == nil , {
             standardEntities = TwoWayDictionary.new;
             standardEntities.add( "&" -> "amp" );
             standardEntities.add( "<" -> "lt" );
             standardEntities.add( ">" -> "gt" );
         });
-    } // end initStandardEntities        
+    } // end initStandardEntities
 
 
     // --- decodeStandardEntities(s) : String ---------------------------------
-    //     
-    *decodeStandardEntities { arg s; // type String        
+    //
+    *decodeStandardEntities { arg s; // type String
         var amppos = s.indexOf( $& );
         var sempos;
         var entity;
         var resolved;
-        
+
         DOMDocument.initStandardEntities;
         if ( amppos != nil , {
             sempos = s.indexOf( $; , amppos );
@@ -463,17 +467,17 @@ DOMDocument : DOMNode {
         },{
             ^s;
         });
-    } // end decodeStandardEntities        
+    } // end decodeStandardEntities
 
 
     // --- encodeStandardEntities(s) : String ---------------------------------
-    //     
-    *encodeStandardEntities { arg s; // type String        
+    //
+    *encodeStandardEntities { arg s; // type String
         var pos;
         var c;
         var r;
         var k;
-        
+
         DOMDocument.initStandardEntities;
         // replace standard entities
         k = standardEntities.keys.asList;
@@ -504,7 +508,7 @@ DOMDocument : DOMNode {
             });
         });
         ^s; // type String
-    } // end encodeStandardEntities        
+    } // end encodeStandardEntities
 
 
 } // end DOMDocument

@@ -1,6 +1,6 @@
 
-/* 
- * SuperCollider3 source file "DOMCharacterData.sc" 
+/*
+ * SuperCollider3 source file "DOMCharacterData.sc"
  * Written by Jens Gulden, jgulden@cs.tu-berlin.de.
  * Licensed under the GNU General Public License (GPL),
  * this software comes with NO WARRANTY.
@@ -9,7 +9,7 @@
 // --- class DOMCharacterData -------------------------------------------------
 //
 // <p></p>
-// @poseidon-object-id [sm$1eed0fb:10d5552be97:-7ef7]  
+// @poseidon-object-id [sm$1eed0fb:10d5552be97:-7ef7]
 DOMCharacterData : DOMNode {
 
     // --- attributes
@@ -20,79 +20,79 @@ DOMCharacterData : DOMNode {
 
 
     // --- getData() : String -------------------------------------------------
-    //    
-    getData {        
+    //
+    getData {
         ^this.getNodeValue; // type String
-    } // end getData        
+    } // end getData
 
 
     // --- setData(data) : void -----------------------------------------------
-    //    
-    setData { arg data; // type String        
+    //
+    setData { arg data; // type String
         this.setNodeValue(data);
-    } // end setData        
+    } // end setData
 
 
     // --- getLength() : int --------------------------------------------------
-    //    
-    getLength {        
+    //
+    getLength {
         ^this.getData.size; // type int
-    } // end getLength        
+    } // end getLength
 
 
     // --- substringData(offset, count) : String ------------------------------
-    //      
-    substringData { arg offset, count; // types int, int        
+    //
+    substringData { arg offset, count; // types int, int
         ^this.getData.copyRange(offset, offset + count - 1); // type String
-    } // end substringData        
+    } // end substringData
 
 
     // --- appendData(data) : String ------------------------------------------
-    //     
-    appendData { arg data; // type String        
+    //
+    appendData { arg data; // type String
         this.setData( this.getData ++ data );
-    } // end appendData        
+    } // end appendData
 
 
     // --- insertData(offset, data) : void ------------------------------------
-    //     
-    insertData { arg offset, data; // types int, String        
+    //
+    insertData { arg offset, data; // types int, String
         this.setData( this.getData.copyFromStart(offset) ++ data ++ this.getData.copyToEnd(offset + 1) );
-    } // end insertData        
+    } // end insertData
 
 
     // --- deleteData(offset, count) : void -----------------------------------
-    //     
-    deleteData { arg offset, count; // types int, int        
+    //
+    deleteData { arg offset, count; // types int, int
         this.setData( this.getData.copyFromStart(offset) ++ this.getData.copyToEnd(offset + count + 1) );
-    } // end deleteData        
+    } // end deleteData
 
 
     // --- replaceData(offset, count, data) :  --------------------------------
-    //      
-    replaceData { arg offset, count, data; // types int, int, String        
+    //
+    replaceData { arg offset, count, data; // types int, int, String
         this.deleteData(offset, count);
         this.insertData(offset, data);
-    } // end replaceData        
+    } // end replaceData
 
 
     // --- init(owner, type, name, value, s, e, u) : void ---------------------
-    //          
-    init { arg owner, type, name, value, s, e, u; // types DOMDocument, int, String, String, String, String, String        
+    //
+    init { arg owner, type, name, value, s, e, u; // types DOMDocument, int, String, String, String, String, String
         super.init(owner, type, name, value);
         start = s;
         end = e;
         until = u;
-    } // end init        
+    } // end init
 
 
     // --- parse(parentNode, pos) : int ---------------------------------------
-    //      
-    parse { arg parentNode, pos; // types DOMNode, int        
+    //
+    parse { arg parentNode, pos; // types DOMNode, int
         var xml;
         var xmlRest;
         var delim;
-        
+
         startIndex = pos;
         if ( end != "" , {
             delim = end; // dedicated end code (e.g. ']]>' for DOMCDATASection)
@@ -112,56 +112,68 @@ DOMCharacterData : DOMNode {
             pos = endIndex;
             if ( end != "" , { // delimiter is part of node
                 pos = pos + delim.size;
-            });            
+            });
             endIndex = endIndex - 1;
         });
         // don't do copyRange to set nodeValue, only on first access and then cache (see getNodeValue)
         ^pos;
-    } // end parse        
+    } // end parse
 
 
     // --- format(indentLevel) : String ---------------------------------------
-    //     
-    format { arg indentLevel; // type int        
+    //
+    format { arg indentLevel; // type int
         var formatted;
         var indentStr;
         var endformatted = "";
-        
+
+		"... HELLO TEXT BLOCK ...".postln;
+
+		"... ... FORMATTING TEXT ... %".format(this.getDataFormatted).postln;
+
         if (indentLevel  == nil, { indentLevel = 0 });
         formatted = this.getDataFormatted;
+		"...1 FORMATTED: %".format(formatted).postln;
         if ( ( ( not (this.getOwnerDocument.preserveWhitespace) ) && ( (this.getNodeType == DOMNode.node_TEXT) || (this.getNodeType == DOMNode.node_COMMENT) ) ) , { // maybe perform indentation
-            if ( Toolbox.isMultiline(formatted) , {
+            "...2".postln;
+			if ( Toolbox.isMultiline(formatted) , {
+				"...3".postln;
                 if ( this.getNodeType == DOMNode.node_COMMENT, {
+					"...4".postln;
                     indentStr = Toolbox.repeat(" ", this.getOwnerDocument.indent * indentLevel);
-                    indentLevel = indentLevel + 1; // text block is again indented
+                    "...5".postln;
+					indentLevel = indentLevel + 1; // text block is again indented
                     endformatted = Char.nl ++ indentStr; // prepare for end-mark (-->)
                 });
+				"...6".postln;
                 formatted = Toolbox.trim( Toolbox.indentAbs( Toolbox.trim(formatted), (indentLevel * this.getOwnerDocument.indent) ) ) ++ endformatted;
+				"...7 TRIMMED: %".format(formatted).postln;
             });
         });
+		"...8".postln;
         ^(start ++ formatted ++ end); // type String
-    } // end format        
+    } // end format
 
 
     // --- getDataFormatted() : String ----------------------------------------
-    //    
-    getDataFormatted {        
+    //
+    getDataFormatted {
         // returns data prepared for output into XML document
         // will be overwritten by DOMText to perform entity encoding first
         ^this.getData; // type  String
-    } // end getDataFormatted        
+    } // end getDataFormatted
 
 
     // --- getNodeValue() : String --------------------------------------------
-    //    
-    getNodeValue {        
+    //
+    getNodeValue {
         // overwrites DOMNode.getNodeValue
-        
+
         if ( nodeValue == nil, { // first access, cache now
             nodeValue = this.getOwnerDocument.getNodeValue.copyRange(startIndex, endIndex);
         });
         ^nodeValue;
-    } // end getNodeValue        
+    } // end getNodeValue
 
 
 } // end DOMCharacterData

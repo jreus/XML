@@ -1,6 +1,6 @@
 
-/* 
- * SuperCollider3 source file "DOMElement.sc" 
+/*
+ * SuperCollider3 source file "DOMElement.sc"
  * Written by Jens Gulden, jgulden@cs.tu-berlin.de.
  * Licensed under the GNU General Public License (GPL),
  * this software comes with NO WARRANTY.
@@ -9,7 +9,7 @@
 // --- class DOMElement -------------------------------------------------------
 //
 // <p></p>
-// @poseidon-object-id [sm$1eed0fb:10d5552be97:-7f58]  
+// @poseidon-object-id [sm$1eed0fb:10d5552be97:-7f58]
 DOMElement : DOMNode {
 
     // --- relationships
@@ -19,22 +19,22 @@ DOMElement : DOMNode {
 
 
     // --- new(owner, tagname) : DOMElement -----------------------------------
-    //      
-    *new { arg owner, tagname; // types DOMDocument, String        
+    //
+    *new { arg owner, tagname; // types DOMDocument, String
         ^super.new.init(owner, DOMNode.node_ELEMENT, tagname);
-    } // end new        
+    } // end new
 
 
     // --- getTagName() : String ----------------------------------------------
-    //    
-    getTagName {        
+    //
+    getTagName {
         ^this.getNodeName; // type String
-    } // end getTagName        
+    } // end getTagName
 
 
     // --- getAttribute(name) : String ----------------------------------------
-    //     
-    getAttribute { arg name; // type String        
+    //
+    getAttribute { arg name; // type String
         var n;
         n = this.getAttributeNode(name);
         if ( n != nil , {
@@ -42,49 +42,49 @@ DOMElement : DOMNode {
         },{
             ^nil;
         });
-    } // end getAttribute        
+    } // end getAttribute
 
 
     // --- setAttribute(name, value) :  ---------------------------------------
-    //     
-    setAttribute { arg name, value; // types String, String        
+    //
+    setAttribute { arg name, value; // types String, String
         var attr;
-        
+
         attr = this.getAttributeNode(name);
         if ( attr == nil , {
             attr = DOMAttr.new.init(this);
             attributes.put(name, attr);
         });
         attr.setNodeValue(value);
-    } // end setAttribute        
+    } // end setAttribute
 
 
     // --- removeAttribute(name) : void ---------------------------------------
-    //    
-    removeAttribute { arg name; // type String        
+    //
+    removeAttribute { arg name; // type String
         this.getAttributes.removeAt(name);
-    } // end removeAttribute        
+    } // end removeAttribute
 
 
     // --- getAttributeNode(name) : DOMAttr -----------------------------------
-    //     
-    getAttributeNode { arg name; // type String        
+    //
+    getAttributeNode { arg name; // type String
         ^this.getAttributes.at(name);
-    } // end getAttributeNode        
+    } // end getAttributeNode
 
 
     // --- getElementsByTagName(tagname) : List -------------------------------
-    //     
-    getElementsByTagName { arg tagname; // type String        
+    //
+    getElementsByTagName { arg tagname; // type String
         ^this.select( { arg node;  ( (node.getNodeType == DOMNode.node_ELEMENT) && ( tagname == node.getNodeName ) ) } );
-    } // end getElementsByTagName        
+    } // end getElementsByTagName
 
 
     // --- normalize() : void -------------------------------------------------
-    //   
-    normalize {        
+    //
+    normalize {
         var n2;
-        
+
         children.do({ arg node, index;
             if ( node.getNodeType == DOMNode.node_TEXT , {
                 if ( (index < (children.size-1)) , {
@@ -98,12 +98,12 @@ DOMElement : DOMNode {
                 });
             });
         });
-    } // end normalize        
+    } // end normalize
 
 
     // --- getText() : String -------------------------------------------------
-    //    
-    getText {        
+    //
+    getText {
         var n;
         n = this.getFirstChild;
         if ( n != nil , {
@@ -113,33 +113,33 @@ DOMElement : DOMNode {
         },{
             ^nil; // type  String
         });
-    } // end getText        
+    } // end getText
 
 
     // --- getElement(tagname) : DOMElement -----------------------------------
-    //     
-    getElement { arg tagname; // type String        
+    //
+    getElement { arg tagname; // type String
         ^this.detect( { arg node;  ( (node.getNodeType == DOMNode.node_ELEMENT) && ( tagname == node.getNodeName ) ) } ); // type  DOMElement
-    } // end getElement        
+    } // end getElement
 
 
     // --- hasAttributes() : boolean ------------------------------------------
-    //    
-    hasAttributes {        
+    //
+    hasAttributes {
         ^(not (this.getAttributes.isEmpty)); // type boolean
-    } // end hasAttributes        
+    } // end hasAttributes
 
 
     // --- hasAttribute(name) : boolean ---------------------------------------
-    //     
-    hasAttribute { arg name; // type String        
+    //
+    hasAttribute { arg name; // type String
         ^this.getAttributes.keys.includes(name); // type String
-    } // end hasAttribute        
+    } // end hasAttribute
 
 
     // --- parse(parentNode, pos) : void --------------------------------------
-    //     
-    parse { arg parentNode, pos; // types DOMNode, int        
+    //
+    parse { arg parentNode, pos; // types DOMNode, int
         var xml;
         var attr;
         var p;
@@ -186,12 +186,12 @@ DOMElement : DOMNode {
             pos = pos + 1;
         });
         ^(pos + 1);
-    } // end parse        
+    } // end parse
 
 
     // --- format(indentLevel) : String ---------------------------------------
-    //     
-    format { arg indentLevel; // type int        
+    //
+    format { arg indentLevel; // type int
         var xml;
         var attrVal;
         var whitespace;
@@ -199,14 +199,20 @@ DOMElement : DOMNode {
         var childIndent;
         var type;
         var multiline;
-        
+
+		"FORMATTING ... ... % %".format(this.getNodeName, this).postln;
+
         if (indentLevel == nil, { indentLevel = 0 });
         whitespace = this.getOwnerDocument.preserveWhitespace;
         xml = "<" ++ this.getTagName;
         this.getAttributes.keysDo({ arg attrName;
-            attrVal = this.getAttribute(attrName);
+			attrVal = this.getAttribute(attrName) ? "";
+			"FORMATTING ... ... ... attribute %: %".format(attrName, attrVal).postln;
             xml = xml ++ " " ++ attrName ++ "=\"" ++ attrVal.escapeChar(34.asAscii) ++ "\""; // 34=\"
         });
+
+		"... CHILD NODES ... % %".format(this.getChildNodes, this).postln;
+
         if ( this.hasChildNodes , {
             xml = xml ++ ">";
             selfIndent = Toolbox.repeat(" ", this.getOwnerDocument.indent * indentLevel);
@@ -236,14 +242,18 @@ DOMElement : DOMNode {
         },{ // else
             xml = xml ++ "/>";
         });
+
+		"DONE FORMATTING ELEMENT ... % %".format(this.getNodeName, this);
+
+
         ^xml;
-    } // end format        
+    } // end format
 
 
     // --- parseAttributes() : void -------------------------------------------
-    //   
-    parseAttributes {        
-        var pos;    
+    //
+    parseAttributes {
+        var pos;
         var attr;
         var xml = this.getOwnerDocument.getNodeValue;
         var n;
@@ -263,35 +273,35 @@ DOMElement : DOMNode {
                 });
             });
         });
-    } // end parseAttributes        
+    } // end parseAttributes
 
 
     // --- initAttributes(attrs) :  -------------------------------------------
-    //    
-    initAttributes { arg attrs; // type Dictionary        
+    //
+    initAttributes { arg attrs; // type Dictionary
         attributes = attrs;
-    } // end initAttributes        
+    } // end initAttributes
 
 
     // --- getNodeName() : String ---------------------------------------------
-    //    
-    getNodeName {        
+    //
+    getNodeName {
         // overwrites DOMNode.getNodeName
-        
+
         if ( nodeName == nil, { // first access, cache now
             nodeName = this.getOwnerDocument.getNodeValue.copyRange(startIndex, splitIndex - 1);
         });
         ^nodeName;
-    } // end getNodeName        
+    } // end getNodeName
 
 
     // --- getAttributes() : Dictionary ---------------------------------------
-    //    
-    getAttributes {        
-        // overwrites DOMNode.getAttributes        
+    //
+    getAttributes {
+        // overwrites DOMNode.getAttributes
         this.parseAttributes;
         ^attributes; // type Dictionary
-    } // end getAttributes        
+    } // end getAttributes
 
 
 } // end DOMElement

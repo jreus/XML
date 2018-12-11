@@ -1,6 +1,6 @@
 
-/* 
- * SuperCollider3 source file "Toolbox.sc" 
+/*
+ * SuperCollider3 source file "Toolbox.sc"
  * Written by Jens Gulden, jgulden@cs.tu-berlin.de.
  * Licensed under the GNU General Public License (GPL),
  * this software comes with NO WARRANTY.
@@ -9,14 +9,14 @@
 // --- class Toolbox ----------------------------------------------------------
 //
 // <p></p>
-// @poseidon-object-id [sm$1eed0fb:10d5552be97:-7ccf]  
+// @poseidon-object-id [sm$1eed0fb:10d5552be97:-7ccf]
 Toolbox {
 
     // --- trimLeft(s) : String -----------------------------------------------
-    //     
-    *trimLeft { arg s; // type String        
+    //
+    *trimLeft { arg s; // type String
         var i = 0;
-        
+		"... TRIMLEFT %".format(s).postln;
         if ( s.size > 0 , {
             if ( s[0].isSpace , {
                 while ( { (i < (s.size-1)) && (s[i].isSpace) } , { i = i + 1 } );
@@ -31,14 +31,15 @@ Toolbox {
         },{
             ^"";
         });
-    } // end trimLeft        
+    } // end trimLeft
 
 
     // --- trimRight(s) : String ----------------------------------------------
-    //     
-    *trimRight { arg s; // type String        
+    //
+    *trimRight { arg s; // type String
         var i = s.size - 1;
-        if ( i >= 0 , {
+        "... TRIMRIGHT %".format(s).postln;
+		if ( i >= 0 , {
             if ( s[i].isSpace , {
                 while ( { ( i > 0 ) && (s[i].isSpace) } , { i = i - 1 } );
                 if ( ((i > 0) || (not (s[i].isSpace))) , {
@@ -52,67 +53,46 @@ Toolbox {
         },{
             ^"";
         });
-    } // end trimRight        
+    } // end trimRight
 
 
     // --- trim(s) : String ---------------------------------------------------
-    //     
-    *trim { arg s; // type String        
+    //
+    *trim { arg s; // type String
         ^Toolbox.trimLeft( Toolbox.trimRight( s ) );
-    } // end trim        
+    } // end trim
 
 
     // --- repeat(s, n) : String ----------------------------------------------
-    //      
-    *repeat { arg s, n; // types String, int        
+    //
+    *repeat { arg s, n; // types String, int
         if ( n == 0 , {
             ^"";
         },{
             ^(s ++ Toolbox.repeat( s, n - 1 )); // recursion
         });
-    } // end repeat        
+    } // end repeat
 
 
     // --- isMultiline(s) : boolean -------------------------------------------
-    //     
-    *isMultiline { arg s; // type String        
+    //
+    *isMultiline { arg s; // type String
         ^( s.find(Char.nl) != nil ); // type  boolean
-    } // end isMultiline        
-
-
-    // --- split(s, delim) : List ---------------------------------------------
-    //      
-    *split { arg s, delim; // types String, String        
-        var l = List.new;
-        var f;
-        var pos;
-        
-        f = { arg s;
-            pos = s.find(delim);
-            if ( pos != nil , {
-                l.add(s.copyFromStart(pos-1));
-                f.value(s.copyToEnd(pos+delim.size)); // recursion
-            },{
-                l.add(s);
-            });
-        };        
-        f.value(s);
-        ^l; // type List
-    } // end split        
+    } // end isMultiline
 
 
     // --- splitLines(s) : List -----------------------------------------------
-    //     
-    *splitLines { arg s; // type String        
-        ^Toolbox.split(s, Char.nl);
-    } // end splitLines        
+    //
+    *splitLines { arg s; // type String
+        ^s.split(Char.nl);
+    } // end splitLines
 
 
     // --- join(l, delim) : String --------------------------------------------
-    //      
-    *join { arg l, delim; // types List, String        
+    //
+    *join { arg l, delim; // types List, String
         var s = nil;
-        
+
         l.do({ arg e;
             if ( s == nil , {
                 s = e;
@@ -121,38 +101,42 @@ Toolbox {
             });
         });
         ^s;
-    } // end join        
+    } // end join
 
 
     // --- joinLines(l) : String ----------------------------------------------
-    //     
-    *joinLines { arg l; // type List        
+    //
+    *joinLines { arg l; // type List
         ^Toolbox.join(l, Char.nl); // type  String
-    } // end joinLines        
+    } // end joinLines
 
 
     // --- indent(s, shift) : String ------------------------------------------
-    //      
-    *indent { arg s, shift; // types String, int        
+    //
+    *indent { arg s, shift; // types String, int
         var lines;
         var ind;
-        
+		"... INDENT % %".format(shift,s).postln;
+
         lines = Toolbox.splitLines(s);
         ind = Toolbox.repeat(" ", shift);
         lines.do({ arg l, index;
             lines.put(index, (ind ++ Toolbox.trimLeft(l)));
         });
         ^Toolbox.joinLines(lines);
-    } // end indent        
+    } // end indent
 
 
     // --- unindent(s, shift) : String ----------------------------------------
-    //      
-    *unindent { arg s, shift; // types String, int        
+    //
+    *unindent { arg s, shift; // types String, int
         // if shift==-1: unindent to maximum possible (at least one line will start without blanks, oters are shifted relatively)
         var lines;
         var spaces;
-        
+
+		"... UNINDENT % %".format(shift,s).postln;
+
+
         lines = Toolbox.splitLines(s);
         if ( shift == -1 , { // first find shift value: minimum number of blanks at the beginning of lines
             lines.do({ arg line;
@@ -162,24 +146,24 @@ Toolbox {
                 });
             });
         });
-        
+
         if ( shift > 0 , {
             lines.do({ arg line, index;
                 line = line.copyToEnd(shift); // cut left part
                 lines.put(index, line);
             });
         });
-        
+
         ^Toolbox.joinLines(lines); // type  String
-    } // end unindent        
+    } // end unindent
 
 
     // --- indentAbs(s, shift) : String ---------------------------------------
-    //      
-    *indentAbs { arg s, shift; // types String, int        
-        // indent to absolute shifting, i.e. independently of original indentation        
+    //
+    *indentAbs { arg s, shift; // types String, int
+        // indent to absolute shifting, i.e. independently of original indentation
         ^Toolbox.indent( Toolbox.unindent(s, -1), shift ); // type  String
-    } // end indentAbs        
+    } // end indentAbs
 
 
 } // end Toolbox
