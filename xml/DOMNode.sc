@@ -1,6 +1,6 @@
 
-/* 
- * SuperCollider3 source file "DOMNode.sc" 
+/*
+ * SuperCollider3 source file "DOMNode.sc"
  * Written by Jens Gulden, jgulden@cs.tu-berlin.de.
  * Licensed under the GNU General Public License (GPL),
  * this software comes with NO WARRANTY.
@@ -9,7 +9,7 @@
 // --- class DOMNode ----------------------------------------------------------
 //
 // <p>Attributes of the node are stored via Dictionary-entries.</p>
-// @poseidon-object-id [sm$1eed0fb:10d5552be97:-7da9]  
+// @poseidon-object-id [sm$1eed0fb:10d5552be97:-7da9]
 DOMNode {
 
     // --- attributes
@@ -40,66 +40,66 @@ DOMNode {
 
 
     // --- getNodeName() : String ---------------------------------------------
-    //    
-    getNodeName {        
+    //
+    getNodeName {
         ^nodeName;
-    } // end getNodeName        
+    } // end getNodeName
 
 
     // --- setNodeName(name) : void -------------------------------------------
-    //    
-    setNodeName { arg name; // type String        
+    //
+    setNodeName { arg name; // type String
         nodeName = name;
-    } // end setNodeName        
+    } // end setNodeName
 
 
     // --- getNodeValue() : String --------------------------------------------
-    //    
-    getNodeValue {        
+    //
+    getNodeValue {
         ^nodeValue;
-    } // end getNodeValue        
+    } // end getNodeValue
 
 
     // --- setNodeValue(value) : void -----------------------------------------
-    //    
-    setNodeValue { arg value; // type String        
+    //
+    setNodeValue { arg value; // type String
         nodeValue = value;
-    } // end setNodeValue        
+    } // end setNodeValue
 
 
     // --- getNodeType() : int ------------------------------------------------
-    //    
-    getNodeType {        
+    //
+    getNodeType {
         ^nodeType;
-    } // end getNodeType        
+    } // end getNodeType
 
 
     // --- setNodeType(type) : void -------------------------------------------
-    //    
-    setNodeType { arg type; // type int        
+    //
+    setNodeType { arg type; // type int
         nodeType = type;
-    } // end setNodeType        
+    } // end setNodeType
 
 
     // --- getParentNode() : DOMNode ------------------------------------------
-    //    
-    getParentNode {        
+    //
+    getParentNode {
         ^parent; // type DOMNode
-    } // end getParentNode        
+    } // end getParentNode
 
 
     // --- setParentNode(p) :  ------------------------------------------------
-    //    
-    setParentNode { arg p; // type DOMNode        
+    //
+    setParentNode { arg p; // type DOMNode
         parent = p;
-    } // end setParentNode        
+    } // end setParentNode
 
 
     // --- getChildNodes(deep) : List -----------------------------------------
-    //     
-    getChildNodes { arg deep; // type boolean        
+    //
+    getChildNodes { arg deep; // type boolean
         var l;
-        
+
         if ( deep == true, {
             l = List.new;
             children.do({ arg node;
@@ -110,63 +110,63 @@ DOMNode {
             l = children;
         });
         ^l; // type List
-    } // end getChildNodes        
+    } // end getChildNodes
 
 
     // --- getFirstChild() : DOMNode ------------------------------------------
-    //    
-    getFirstChild {        
+    //
+    getFirstChild {
         ^children.first;
-    } // end getFirstChild        
+    } // end getFirstChild
 
 
     // --- getLastChild() : DOMNode -------------------------------------------
-    //    
-    getLastChild {        
+    //
+    getLastChild {
         ^children.last;
-    } // end getLastChild        
+    } // end getLastChild
 
 
     // --- getPreviousSibling() : DOMNode -------------------------------------
-    //    
-    getPreviousSibling {        
+    //
+    getPreviousSibling {
         if ( parent != nil, {
             ^parent.getPreviousSiblingOfChild(this);
         },{
             ^nil;
         });
-    } // end getPreviousSibling        
+    } // end getPreviousSibling
 
 
     // --- getNextSibling() : DOMNode -----------------------------------------
-    //    
-    getNextSibling {        
+    //
+    getNextSibling {
         if ( parent != nil, {
             ^parent.getNextSiblingOfChild(this);
         },{
             ^nil;
         });
-    } // end getNextSibling        
+    } // end getNextSibling
 
 
     // --- getAttributes() : Dictionary ---------------------------------------
-    //    
-    getAttributes {        
+    //
+    getAttributes {
         // default implementation returns nil, overwritten by DOMElement
         ^nil; // type Dictionary
-    } // end getAttributes        
+    } // end getAttributes
 
 
     // --- getOwnerDocument() : DOMDocument -----------------------------------
-    //    
-    getOwnerDocument {        
+    //
+    getOwnerDocument {
         ^ownerDocument; // type DOMDocument
-    } // end getOwnerDocument        
+    } // end getOwnerDocument
 
 
     // --- insertBefore(newChild, refChild) : DOMNode -------------------------
-    //      
-    insertBefore { arg newChild, refChild; // types DOMNode, DOMNode        
+    //
+    insertBefore { arg newChild, refChild; // types DOMNode, DOMNode
         var i = children.indexOf(refChild);
         if ( i != nil , {
             children.insert(i, newChild);
@@ -174,52 +174,52 @@ DOMNode {
         },{
             this.appendChild(newChild); // insert at end if refChild==nil
         });
-    } // end insertBefore        
+    } // end insertBefore
 
 
     // --- replaceChild(newChild, oldChild) : DOMNode -------------------------
-    //      
-    replaceChild { arg newChild, oldChild; // types DOMNode, DOMNode        
+    //
+    replaceChild { arg newChild, oldChild; // types DOMNode, DOMNode
         var i = children.indexOf(oldChild);
         if ( i != nil , {
             children.put(i, newChild);
             oldChild.setParentNode(nil);
             newChild.setParentNode(this);
         });
-    } // end replaceChild        
+    } // end replaceChild
 
 
     // --- removeChild(oldChild) : DOMNode ------------------------------------
-    //     
-    removeChild { arg oldChild; // type DOMNode        
+    //
+    removeChild { arg oldChild; // type DOMNode
         var i = children.indexOf(oldChild);
         if ( i != nil , {
             children.removeAt(i);
             oldChild.setParentNode(nil);
         });
-    } // end removeChild        
+    } // end removeChild
 
 
     // --- appendChild(node) : void -------------------------------------------
-    //    
-    appendChild { arg node; // type DOMNode        
+    //
+    appendChild { arg node; // type DOMNode
         if ( ( not (children.includes(node)) ) , {
             node.setParentNode(this);
             children.add(node);
         });
-    } // end appendChild        
+    } // end appendChild
 
 
     // --- hasChildNodes() : boolean ------------------------------------------
-    //    
-    hasChildNodes {        
+    //
+    hasChildNodes {
         ^( not (children.isEmpty) ); // type boolean
-    } // end hasChildNodes        
+    } // end hasChildNodes
 
 
     // --- cloneNode(deep) : DOMNode ------------------------------------------
-    //     
-    cloneNode { arg deep; // type boolean        
+    //
+    cloneNode { arg deep; // type boolean
         var node;
         var child;
         node =  switch ( this.getNodeType,
@@ -247,41 +247,41 @@ DOMNode {
             });
         });
         ^node;
-    } // end cloneNode        
+    } // end cloneNode
 
 
     // --- hasAttributes() : boolean ------------------------------------------
-    //    
-    hasAttributes {        
+    //
+    hasAttributes {
         ^false; // default implementation for all classes except DOMElement
-    } // end hasAttributes        
+    } // end hasAttributes
 
 
     // --- do(action) : void --------------------------------------------------
-    //    
-    do { arg action; // type Function        
+    //
+    do { arg action; // type Function
         action.value( this ); // perform action
-        this.getChildNodes.do( { arg child; 
+        this.getChildNodes.do( { arg child;
             child.do(action);
         });
-    } // end do        
+    } // end do
 
 
     // --- collect(action) : List ---------------------------------------------
-    //     
-    collect { arg action; // type Function        
+    //
+    collect { arg action; // type Function
         var result = List.new;
         //result.add( action.value(this) );
         this.do({ arg node; // 'do' is full left-order traversal
             result.add( action.value(node) ); // perform action
         });
         ^result;
-    } // end collect        
+    } // end collect
 
 
     // --- select(action) : List ----------------------------------------------
-    //     
-    select { arg action; // type Function        
+    //
+    select { arg action; // type Function
         var result = List.new;
         this.do({ arg node; // 'do' is full left-order traversal
             if ( (action.value(node) == true) , {
@@ -289,21 +289,21 @@ DOMNode {
             });
         });
         ^result;
-    } // end select        
+    } // end select
 
 
     // --- reject(action) : List ----------------------------------------------
-    //     
-    reject { arg action; // type Function        
+    //
+    reject { arg action; // type Function
         ^this.select( { arg n; not ( action.value(n) ) } ); // (I love the SC language...)
-    } // end reject        
+    } // end reject
 
 
     // --- detect(action) : DOMNode -------------------------------------------
-    //     
-    detect { arg action; // type Function        
+    //
+    detect { arg action; // type Function
         var r;
-        
+
         if( action.value(this) == true , {
             ^this;
         },{
@@ -315,12 +315,12 @@ DOMNode {
             });
         });
         ^nil;
-    } // end detect        
+    } // end detect
 
 
-    // --- init(owner, type, name, value, start, split, end) :  ---------------
-    //          
-    init { arg owner, type, name, value, start, split, end; // types DOMDocument, int, String, String, int, int, int        
+    // --- init(owner, type, name, value, start, split, end) :  --------------- //
+    init { arg owner, type, name, value, start, split, end;
+		// types DOMDocument, int, String, String, int, int, int
         ownerDocument = owner;
         nodeType = type;
         nodeName = name;
@@ -332,42 +332,41 @@ DOMNode {
         if ( children == nil , { // (might be != nil if re-init during DOMDocument.importNode)
             children = List.new;
         });
-    } // end init        
+    } // end init
 
 
-    // --- getNextSiblingOfChild(child) : DOMNode -----------------------------
-    //     
-    getNextSiblingOfChild { arg child; // type DOMNode        
+    // --- getNextSiblingOfChild(child) : DOMNode ----------------------------- //
+    getNextSiblingOfChild { arg child; // type DOMNode
         var i = children.indexOf(child);
         if ( (i < (children.size - 1)) , {
             ^children[ i + 1 ];
         },{
             ^nil;
         });
-    } // end getNextSiblingOfChild        
+    } // end getNextSiblingOfChild
 
 
     // --- getPreviousSiblingOfChild(child) : DOMNode -------------------------
-    //     
-    getPreviousSiblingOfChild { arg child; // type DOMNode        
+    //
+    getPreviousSiblingOfChild { arg child; // type DOMNode
         var i = children.indexOf(child);
         if ( i > 0 , {
             ^children[ i - 1 ];
         },{
             ^nil;
         });
-    } // end getPreviousSiblingOfChild        
+    } // end getPreviousSiblingOfChild
 
 
     // --- parse(parent, pos) : int -------------------------------------------
-    //      
+    //
     parse { arg parent, pos; // types DOMNode, int
         "ABSTRACT".die; // simulate abstract method
     }
 
 
     // --- format(indentLevel) : String ---------------------------------------
-    //     
+    //
     format { arg indentLevel; // type int
         "ABSTRACT".die; // simulate abstract method
     }

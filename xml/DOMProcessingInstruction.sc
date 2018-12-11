@@ -1,6 +1,6 @@
 
-/* 
- * SuperCollider3 source file "DOMProcessingInstruction.sc" 
+/*
+ * SuperCollider3 source file "DOMProcessingInstruction.sc"
  * Written by Jens Gulden, jgulden@cs.tu-berlin.de.
  * Licensed under the GNU General Public License (GPL),
  * this software comes with NO WARRANTY.
@@ -9,40 +9,40 @@
 // --- class DOMProcessingInstruction -----------------------------------------
 //
 // <p></p>
-// @poseidon-object-id [sm$1eed0fb:10d5552be97:-7faf]  
+// @poseidon-object-id [sm$1eed0fb:10d5552be97:-7faf]
 DOMProcessingInstruction : DOMNode {
 
     // --- new(owner, target, data) :  ----------------------------------------
-    //      
-    *new { arg owner, target, data; // types DOMDocument, String, String        
+    //
+    *new { arg owner, target, data; // types DOMDocument, String, String
         ^super.new.init(owner, DOMNode.node_PROCESSING_INSTRUCTION, target, data);
-    } // end new        
+    } // end new
 
 
     // --- getTarget() : String -----------------------------------------------
-    //    
-    getTarget {        
+    //
+    getTarget {
         ^this.getNodeName;
-    } // end getTarget        
+    } // end getTarget
 
 
     // --- getData() : String -------------------------------------------------
-    //    
-    getData {        
+    //
+    getData {
         ^this.getNodeValue;
-    } // end getData        
+    } // end getData
 
 
     // --- setData(data) :  ---------------------------------------------------
-    //    
-    setData { arg data; // type String        
+    //
+    setData { arg data; // type String
         setNodeValue(data);
-    } // end setData        
+    } // end setData
 
 
     // --- parse(parentNode, pos) : int ---------------------------------------
-    //      
-    parse { arg parentNode, pos; // types DOMNode, int        
+    //
+    parse { arg parentNode, pos; // types DOMNode, int
         var xml;
         // pos points on first char of target name
         xml = this.getOwnerDocument.getNodeValue;
@@ -58,41 +58,41 @@ DOMProcessingInstruction : DOMNode {
         });
         endIndex = pos - 1;
         ^(pos + 1);
-    } // end parse        
+    } // end parse
 
 
     // --- format(indentLevel) : String ---------------------------------------
-    //     
-    format { arg indentLevel; // type int        
+    //
+    format { arg indentLevel; // type int
         var indentStr;
         if (indentLevel  == nil, { indentLevel = 0 });
         indentStr = Toolbox.repeat(" ", this.getOwnerDocument.indent * indentLevel);
-        ^(indentStr ++ "<?" ++ this.getNodeName ++ " " ++ this.getData ++ "?>");
-    } // end format        
+        ^(indentStr ++ "<?" ++ this.getNodeName ++ " " ++ this.getData ++ " ?>\n");
+    } // end format
 
 
     // --- getNodeName() : String ---------------------------------------------
-    //    
-    getNodeName {        
+    //
+    getNodeName {
         // overwrites DOMNode.getNodeName
-        
+
         if ( nodeName == nil, { // first access, cache now
             nodeName = this.getOwnerDocument.getNodeValue.copyRange(startIndex, splitIndex - 1);
         });
         ^nodeName;
-    } // end getNodeName        
+    } // end getNodeName
 
 
     // --- getNodeValue() : String --------------------------------------------
-    //    
-    getNodeValue {        
+    //
+    getNodeValue {
         // overwrites DOMNode.getNodeValue
-        
+
         if ( nodeValue == nil, { // first access, cache now
             nodeValue = this.getOwnerDocument.getNodeValue.copyRange(splitIndex + 1, endIndex - 1);
         });
         ^nodeValue;
-    } // end getNodeValue        
+    } // end getNodeValue
 
 
 } // end DOMProcessingInstruction

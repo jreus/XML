@@ -1,0 +1,388 @@
+TITLE:: DOMDocument
+summary:: The main class for acessing and parsing XML documents.
+related:: Classes/JSON, Classes/File
+categories:: Files
+
+DESCRIPTION::
+DOMDocument is the main class for acessing XML documents. This class and all related DOMXxx-classes implement a subset of the DOM-Level-1 specification for XML parsers, adopted to the the SuperCollider language.
+
+See http://www.w3.org/TR/REC-DOM-Level-1/level-one-core.html for the full level 1 specification of the Document Object Model (DOM).
+
+All interfaces specified by the DOM, if used at all in this implementation, are directly mapped to SuperCollider classes. The original interface inheritance hierarchy is thus preserved in the class hierarchy (which is not necessarily required for the implementation of interfaces, see DOM-Level-1, 1.1.2).
+
+Classes implementing the DOM interfaces are:
+
+link::Classes/DOMDocument::
+
+The central class for accessing XML documents. This is the only class whose instances get created using 'DOMDocument.new', instances of any other class are either created internally during parsing of an XML-string, or programmatically through calls on 'DOMDocument.createElement(..)', 'DOMDocument.createText(..)', etc.
+
+link::Classes/DOMElement::
+
+Represents an XML-tag.
+
+DOMAttr
+
+Represents an attribute of an XML-tag. The implementation considers this class as a helper class and only partially implements the DOM specification of DOMAttr. Attribute values should only be accessed via the corresponding getAttribute, setAttribute methods of DOMElement.
+
+DOMCharacterData
+
+Abstract class. This is the common superclass of all nodes in the document which carry free-form string content.
+
+
+
+DOMText
+
+Text in the document.
+
+
+
+DOMComment
+
+Comment in the document (ignored by default during parsing, set DOMDocument.parseComments=true to get access to comment nodes).
+
+
+
+DOMCDATASection
+
+Raw text section.
+
+
+
+DOMProcessingInstruction
+
+Processing instruction nodes.
+
+
+
+DOMNode
+
+The common superclass of all nodes. Each node can also be accessed via the
+methods of this class only, which the DOM calls a 'flat'-access to the document
+nodes (flat in terms of meta-model classes, the document-structure of course
+is always composed of nodes in a tree structure described by the parent-children
+relationship, see DOM-Level-1, 1.1.4).
+
+
+
+Some interfaces specified in the DOM-Level-1 are not implemented by this adoption:
+
+
+
+DOMString
+
+Not implemented, SuperCollider's own String class is used for best integration into SuperCollider.
+
+
+
+NodeList, NamedNodeMap
+
+Not implemented, SuperCollider's own collection classes are used for best integration into SuperCollider.
+
+
+
+DOMException
+
+Not implemented, in most cases errors will result from SuperCollider's own exception handling, especially in cases of errors resulting from collection classes. Parse errors are handled by method DOMDocument.parseError which by default will simply output a text message and exit the program. This might be overwritten for a more subtle handling of parse errors.
+
+
+
+DOMDocumentType, DOMNotation
+
+Not implemented. DTDs are no longer up-to-date technology anyway (use XML-Schema instead), and in most cases it will not be necessary to validate an XML document from within SuperCollider. External tools could easily be used in cases where DTD-based validation is required. Calling DOMDocument.getDoctype will always return nil (as allowed by the specification, see DOM-Level-1, 1.3). During parsing, doctype declarations will be treated like comments.
+
+
+DOMEntity, DOMEntityReference
+
+Not implemented, only a fixed set of simple character-entities in Text-nodes is supported.
+
+As a notation convention, all methods marked as 'public' ('+') in the UML class diagram belong to the implementations of DOM interfaces. In contrast to that, all methods marked as 'friendly' ('~') are additions specific to this SuperCollider-implementations. The code generated from the class diagram does, however, not distinguish between different levels of visibility, so the 'friendly' methods are still publicly accessibly from any other SuperCollider class. (There are also methods marked as 'protected' ('#'), these are intended to be internal
+
+ methods of the implementation. They should not be called from outside code.)
+
+
+
+Note: The DOM-Level-1 specification covers version 1.0 of the XML standard only. Newer versions of the DOM also include features like XML namespaces, which are explicitly not supported by this adoption, but might not be required for most applications within SuperCollider anyway.
+
+CLASSMETHODS::
+
+METHOD:: encodeStandardEntities
+(describe method here)
+
+ARGUMENT:: s
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: decodeStandardEntities
+(describe method here)
+
+ARGUMENT:: s
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: filename
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: initStandardEntities
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: getDoctype
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: parseXML
+(describe method here)
+
+ARGUMENT:: xml
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: filename
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: parseComments
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: getDocumentElement
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: parseError
+(describe method here)
+
+ARGUMENT:: message
+(describe argument here)
+
+ARGUMENT:: pos
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: createDocumentFragment
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: read
+(describe method here)
+
+ARGUMENT:: file
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: createTextNode
+(describe method here)
+
+ARGUMENT:: text
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: format
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: linenr
+(describe method here)
+
+ARGUMENT:: pos
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: parseQuoted
+(describe method here)
+
+ARGUMENT:: pos
+(describe argument here)
+
+ARGUMENT:: result
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: skipUntil
+(describe method here)
+
+ARGUMENT:: pos
+(describe argument here)
+
+ARGUMENT:: delim
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: write
+(describe method here)
+
+ARGUMENT:: file
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: parse
+(describe method here)
+
+ARGUMENT:: parentNode
+(describe argument here)
+
+ARGUMENT:: pos
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: preserveWhitespace
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: getImplementation
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: createProcessingInstruction
+(describe method here)
+
+ARGUMENT:: target
+(describe argument here)
+
+ARGUMENT:: data
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: importNode
+(describe method here)
+
+ARGUMENT:: node
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: createElement
+(describe method here)
+
+ARGUMENT:: tagname
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: initFromFile
+(describe method here)
+
+ARGUMENT:: filename
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: createCDATASection
+(describe method here)
+
+ARGUMENT:: cdata
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: getElementsByTagName
+(describe method here)
+
+ARGUMENT:: tagname
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: indent
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: createComment
+(describe method here)
+
+ARGUMENT:: comment
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+~file = "".resolveRelative +/+ "myxmlfile.xml";
+
+( // Create a XML DOM and write it to a file.
+y = DOMDocument.new;
+y.appendChild(y.createProcessingInstruction("xml", "version=\"1.0\""));
+x = y.createElement("xml");
+y.appendChild(x);
+
+e = y.createElement("element");
+x.appendChild(e);
+f = y.createElement("subelement");
+f.setAttribute("numargs", "32");
+f.setAttribute("direction", "north");
+t = y.createTextNode("{ b.value(); }");
+f.appendChild(t);
+e.appendChild(f);
+z = y.createElement("subelm2");
+t = y.createTextNode("a sub element");
+z.appendChild(t);
+e.appendChild(z);
+
+e = y.createElement("element");
+x.appendChild(e);
+f = y.createElement("subelement");
+f.setAttribute("numargs", "21");
+f.setAttribute("direction", "south");
+t = y.createTextNode("{ a.function; }");
+f.appendChild(t);
+e.appendChild(f);
+z = y.createElement("subelm2");
+z.setAttribute("num", "3");
+t = y.createTextNode("a different sub element");
+z.appendChild(t);
+e.appendChild(z);
+
+y.format;
+
+a = File.new(p,"w");
+y.write(a);
+a.close;
+);
+
+( // Read XML file from disk and parse it
+q = DOMDocument.new(p);
+q.format;
+x = q.getElementsByTagName("xml").pop;
+x.getElementsByTagName("element").do {|elm,i|
+	var sub1, sub2;
+	sub1 = elm.getElement("subelement");
+	sub1.getAttributes.keysValuesDo {|key, attr| "%: %  ".format(key,attr.getNodeValue).post };
+	"".postln;
+	sub1.getFirstChild.getText.postln;
+	sub2 = elm.getElement("subelm2");
+	(sub2.getFirstChild.getText).postln;
+};
+);
+::
