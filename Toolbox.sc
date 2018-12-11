@@ -16,7 +16,6 @@ Toolbox {
     //
     *trimLeft { arg s; // type String
         var i = 0;
-		"... TRIMLEFT %".format(s).postln;
         if ( s.size > 0 , {
             if ( s[0].isSpace , {
                 while ( { (i < (s.size-1)) && (s[i].isSpace) } , { i = i + 1 } );
@@ -38,7 +37,6 @@ Toolbox {
     //
     *trimRight { arg s; // type String
         var i = s.size - 1;
-        "... TRIMRIGHT %".format(s).postln;
 		if ( i >= 0 , {
             if ( s[i].isSpace , {
                 while ( { ( i > 0 ) && (s[i].isSpace) } , { i = i - 1 } );
@@ -116,9 +114,8 @@ Toolbox {
     *indent { arg s, shift; // types String, int
         var lines;
         var ind;
-		"... INDENT % %".format(shift,s).postln;
 
-        lines = Toolbox.splitLines(s);
+		lines = Toolbox.splitLines(s);
         ind = Toolbox.repeat(" ", shift);
         lines.do({ arg l, index;
             lines.put(index, (ind ++ Toolbox.trimLeft(l)));
@@ -133,9 +130,6 @@ Toolbox {
         // if shift==-1: unindent to maximum possible (at least one line will start without blanks, oters are shifted relatively)
         var lines;
         var spaces;
-
-		"... UNINDENT % %".format(shift,s).postln;
-
 
         lines = Toolbox.splitLines(s);
         if ( shift == -1 , { // first find shift value: minimum number of blanks at the beginning of lines
